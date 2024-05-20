@@ -4,41 +4,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Product</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-    <h1>Edit Product</h1>
-    <form action="/api/v1/product/edit/<%= product._id %>" method="post">
-        <input type="hidden" name="_method" value="PUT">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" value="<%= product.name %>"><br><br>
+    <div class="container mt-5">
+        <h1 class="mb-4">Edit Product</h1>
+        <form action="/api/v1/product/edit/<%= product._id %>" method="post">
+            <input type="hidden" name="_method" value="PUT">
 
-        <label for="price">Price:</label>
-        <input type="number" id="price" name="price" value="<%= product.price %>"><br><br>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" class="form-control" id="name" name="name" value="<%= product.name %>">
+                    </div>
 
-        <label for="oldPrice">Old Price:</label>
-        <input type="number" id="oldPrice" name="oldPrice" value="<%= product.oldPrice %>"><br><br>
+                    <div class="form-group">
+                        <label for="price">Price:</label>
+                        <input type="number" class="form-control" id="price" name="price" value="<%= product.price %>">
+                    </div>
 
-        <label for="stock">Stock:</label>
-        <input type="text" id="stock" name="stock" value="<%= product.stock %>"><br><br>
+                    <div class="form-group">
+                        <label for="oldPrice">Old Price:</label>
+                        <input type="number" class="form-control" id="oldPrice" name="oldPrice" value="<%= product.oldPrice %>">
+                    </div>
 
-        <label for="description">Description:</label>
-        <textarea id="description" name="description"><%= product.description %></textarea><br><br>
+                    <div class="form-group">
+                        <label for="quantity">Quantity:</label>
+                        <input type="number" class="form-control" id="quantity" name="quantity" value="<%= product.quantity %>">
+                    </div>
 
-        <label for="brand">Brand:</label>
-        <input type="text" id="brand" name="brand" value="<%= product.brand %>"><br><br>
+                    <div class="form-group">
+                        <label for="weight">Weight:</label>
+                        <input type="number" class="form-control" id="weight" name="weight" value="<%= product.weight %>">
+                    </div>
 
-        <label for="review">Review:</label>
-        <input type="number" id="review" name="review" value="<%= product.review %>"><br><br>
+                    <div class="form-group">
+                        <label for="minweight">Minimum Weight:</label>
+                        <input type="number" class="form-control" id="minweight" name="minweight" value="<%= product.minweight %>">
+                    </div>
+                </div>
 
-        <label for="category">Category:</label>
-        <input type="text" id="category" name="category" value="<%= product.category %>"><br><br>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="check">Check:</label>
+                        <input type="text" class="form-control" id="check" name="check" value="<%= product.check %>">
+                    </div>
 
-        <label for="rating">Rating:</label>
-        <input type="number" id="rating" name="rating" value="<%= product.rating %>"><br><br>
-        <label for="size">Size:</label>
-        <input type="number" id="size" name="size" value="<%= product.size %>"><br><br>
+                    <div class="form-group">
+                        <label for="quality">Quality:</label>
+                        <input type="text" class="form-control" id="quality" name="quality" value="<%= product.quality %>">
+                    </div>
 
-        <button type="submit">Save Changes</button>
-    </form>
+                    <div class="form-group">
+                        <label for="stock">Stock:</label>
+                        <input type="text" class="form-control" id="stock" name="stock" value="<%= product.stock %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description:</label>
+                        <textarea class="form-control" id="description" name="description" rows="4"><%= product.description %></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="brand">Brand:</label>
+                        <input type="text" class="form-control" id="brand" name="brand" value="<%= product.brand %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="review">Review:</label>
+                        <input type="number" class="form-control" id="review" name="review" value="<%= product.review %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Category:</label>
+                        <input type="text" class="form-control" id="category" name="category" value="<%= product.category %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rating">Rating:</label>
+                        <input type="number" class="form-control" id="rating" name="rating" value="<%= product.rating %>">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+        </form>
+    </div>
 </body>
 </html>

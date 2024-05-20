@@ -16,6 +16,9 @@ const productSchema = new mongoose.Schema({
     description: {
         type: String
     },
+    quantity:{
+        type: Number
+    },
     image: {
         type: String
     },
@@ -37,7 +40,17 @@ const productSchema = new mongoose.Schema({
     reviews: {
         type: Array
     },
-    size: {
+    quality:{
+        type: String
+    },
+    check:{
+        type: String
+    },
+
+    weight: {
+        type: Number
+    },
+    minweight:{
         type: Number
     },
     created_at: {
