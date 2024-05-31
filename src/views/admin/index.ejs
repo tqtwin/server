@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thanh sidebar cho admin</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    #sidebar {
+      width: 100%;
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    #sidebar ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      margin: 0;
+      justify-content: flex-end;
+    }
+    #sidebar li {
+      margin-left: 10px;
+      border: 1px solid #fff; /* Add border around each li */
+      padding: 5px 10px; /* Add padding inside the border */
+      border-radius: 4px; /* Optional: Add rounded corners */
+      box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+    }
+    #sidebar li a {
+      text-decoration: none;
+      color: #fff;
+    }
+    #main {
+      flex-grow: 1;
+      padding: 20px;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar">
+    <h2>Fruitables - Vegetable Website - Admin</h2>
+    <ul>
+      <li><a href="">Dashboard</a></li>
+      <li><a href="../admin">Product</a></li>
+      <li><a href="">Account</a></li>
+      <li><a href="../coupon">Coupon</a></li>
+      <li><a href="../order">Order</a></li>
+
+    </ul>
+  </div>
+  <div id="main">
+    Nội dung chính của trang web
+  </div>
+</body>
+</html>

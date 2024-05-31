@@ -10,9 +10,20 @@ age: {
     type: Number,
     required: true
 },
+address: {
+    type: String,
+
+},
+phone: {
+    type: String,
+
+},
 email: {
     type: String,
     required: true
+},
+tinhtrang:{
+    type: String,
 },
 role: {
     type: String,
@@ -31,6 +42,7 @@ password: {
 avatar:{
     type: String,
 }
+
 });
 
 const userModel = mongoose.model('user', userSchema);

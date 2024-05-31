@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account List</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function confirmDeletion(userId) {
+            if (confirm('Bạn có chắc chắn muốn xóa tài khoản này không?')) {
+                window.location.href = '/delete/' + userId;
+            }
+        }
+    </script>
+    <style>
+
+        #sidebar {
+          width: 100%;
+          background-color: #333;
+          color: #fff;
+          padding: 10px;
+          box-sizing: border-box;
+        }
+        #sidebar ul {
+          list-style: none;
+          padding: 0;
+          display: flex;
+          margin: 0;
+          justify-content: flex-end;
+        }
+        #sidebar li {
+          margin-left: 10px;
+          border: 1px solid #fff; /* Add border around each li */
+          padding: 5px 10px; /* Add padding inside the border */
+          border-radius: 4px; /* Optional: Add rounded corners */
+          box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+        }
+        #sidebar li a {
+          text-decoration: none;
+          color: #fff;
+        }
+        #main {
+          flex-grow: 1;
+          padding: 20px;
+          overflow: auto;
+        }
+        /* Highlight the Coupon button */
+        .coupon-highlight {
+          background-color: #ff0; /* Bright yellow background */
+          color: #333; /* Dark text color for contrast */
+          font-weight: bold; /* Make the text bold */
+          border-color: #ff0; /* Match the border color with the background */
+        }
+    </style>
+</head>
+<body>
+
+    <div id="sidebar">
+        <h2>Fruitables - Vegetable Website - Admin</h2>
+        <ul>
+            <li><a href="">Dashboard</a></li>
+            <li><a href="../admin">Product</a></li>
+            <li class="coupon-highlight"><a href="admin/accounts" style="color: #333;">Account</a></li>
+            <li><a href="../coupon">Coupon</a></li>
+            <li><a href="../orderadmin/pending">Order</a></li>
+            <li><a href="/api/v1/users/logout">Logout</a></li>
+        </ul>
+    </div>
+    <div class="container-fluid">
+        <h1>Account</h1>
+        <div class="table-responsive-sm" >
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Address</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Username</th>
+                        <th>Avatar</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% accounts.forEach(account => { %>
+                        <tr>
+                            <td><%= account.name %></td>
+                            <td><%= account.age %></td>
+                            <td><%= account.address %></td>
+                            <td><%= account.phone %></td>
+                            <td><%= account.email %></td>
+                            <td><%= account.role %></td>
+                            <td><%= account.username %></td>
+                            <td><img src="/img/<%= account.avatar %>" alt="Avatar" style="width: 50px; height: 50px;"></td>
+                            <td>
+                                 <button onclick="confirmDeletion('<%= account._id %>')" class="btn btn-danger btn-sm">Xóa</button>
+                                 <% if( account.tinhtrang === 'mở'){ %>
+                                <button onclick="lockAccount('<%= account._id %>')" class="btn btn-info btn-sm">Khóa</button>
+                                <% }else {%>
+                                <button onclick="lockAccount('<%= account._id %>')" class="btn btn-success btn-sm">Mở</button>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+<script>
+    function confirmDeletion(userId) {
+        if (confirm('Bạn có chắc chắn muốn xóa tài khoản này không?')) {
+            window.location.href = '../api/v1/users/deleteaccount/' + userId;
+        }
+    }
+
+    function lockAccount(userId) {
+        if (confirm('Bạn có chắc chắn muốn khóa hoặc mở tài khoản này không?')) {
+            window.location.href = '../api/v1/users/lockaccount/' + userId; // Đổi đường dẫn tới router xử lý khóa tài khoản
+        }
+    }
+</script>
+</html>

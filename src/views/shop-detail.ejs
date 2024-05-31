@@ -34,8 +34,8 @@
         <!-- đưa trang header.ejs vào -->
         <%- include('header') %>
         <!-- Single Product Start -->
-        <div class="container-fluid py-5 mt-5">
-            <div class="container py-5">
+        <div class="container-fluid py-5 mt-5" >
+            <div class="container py-5" style="margin-top: 55px;">
                 <div class="row g-4 mb-5">
                     <div class="col-lg-8 col-xl-9">
 
@@ -52,7 +52,8 @@
                             <div class="col-lg-6">
                                 <h4 class="fw-bold mb-3"><%=product.name%></h4>
                                 <p class="mb-3">Category: <%=product.category%></p>
-                                <h5 class="fw-bold mb-3"><%=product.price%></h5>
+
+                                <h5 class="fw-bold mb-3"><%= new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)%></h5>
                                 <div class="d-flex mb-4">
                                     <i class="fa fa-star text-secondary"></i>
                                     <i class="fa fa-star text-secondary"></i>
@@ -76,7 +77,11 @@
                                         </button>
                                     </div>
                                 </div>
+                                <% if (locals && locals.session && locals.session.user) { %>
                                 <a href="#" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
+                                <%} else{%>
+                                    Đăng nhập để nhận nhiều ưu đãi và mua hàng
+                                    <%}%>
                             </div>
                             <div class="col-lg-12">
                                 <nav>
@@ -139,89 +144,113 @@
                                             </div>
                                         </div>
                                     </div>
+                                   <!-- show comment -->
                                     <div class="tab-pane" id="nav-mission" role="tabpanel" aria-labelledby="nav-mission-tab">
-                                        <div class="d-flex">
-                                            <img src="img/avatar.jpg" class="img-fluid rounded-circle p-3" style="width: 100px; height: 100px;" alt="">
-                                            <div class="">
-                                                <p class="mb-2" style="font-size: 14px;">April 12, 2024</p>
-                                                <div class="d-flex justify-content-between">
-                                                    <h5>Jason Smith</h5>
-                                                    <div class="d-flex mb-3">
-                                                        <i class="fa fa-star text-secondary"></i>
-                                                        <i class="fa fa-star text-secondary"></i>
-                                                        <i class="fa fa-star text-secondary"></i>
-                                                        <i class="fa fa-star text-secondary"></i>
-                                                        <i class="fa fa-star"></i>
+
+                                    <% if (product.reviews && product.reviews.length > 0) { %>
+                                        <% product.reviews.forEach(function(review) { %>
+                                            <div class="d-flex mb-4">
+                                                <img src="img/<%= review.avatar%>" class="img-fluid rounded-circle p-3" style="width: 100px; height: 100px;" alt="">
+                                                <div class="">
+                                                    <p class="mb-2" style="font-size: 14px;"><%= new Date(review.created_at).toLocaleDateString() %></p>
+                                                    <div class="d-flex justify-content-between">
+                                                    <% if (locals && locals.session && locals.session.user) { %>
+                                                        <% if (review.userId === locals.session.user._id) { %>
+                                                        <h5><%= review.name %></h5><span>(Bạn)</span>
+                                                        <% } }else { %>
+                                                            <h5><%=review.name %></h5>
+                                                            <% } %>
+
+                                                        <div class="d-flex mb-3" style="margin-left: 500px;">
+                                                            <% for (let i = 1; i <= 5; i++) { %>
+                                                                <i class="fa fa-star text-secondary <%= i <= review.rating ? 'text-warning' : 'text-muted' %>" data-rating="<%= i %>" ></i>
+                                                            <% } %>
+                                                        </div>
                                                     </div>
+                                                    <p><%= review.review %></p>
                                                 </div>
-                                                <p>The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic
-                                                    words etc. Susp endisse ultricies nisi vel quam suscipit </p>
                                             </div>
-                                        </div>
-                                        <div class="d-flex">
-                                            <img src="img/avatar.jpg" class="img-fluid rounded-circle p-3" style="width: 100px; height: 100px;" alt="">
-                                            <div class="">
-                                                <p class="mb-2" style="font-size: 14px;">April 12, 2024</p>
-                                                <div class="d-flex justify-content-between">
-                                                    <h5>Sam Peters</h5>
-                                                    <div class="d-flex mb-3">
-                                                        <i class="fa fa-star text-secondary"></i>
-                                                        <i class="fa fa-star text-secondary"></i>
-                                                        <i class="fa fa-star text-secondary"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                    </div>
-                                                </div>
-                                                <p class="text-dark">The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic
-                                                    words etc. Susp endisse ultricies nisi vel quam suscipit </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane" id="nav-vision" role="tabpanel">
-                                        <p class="text-dark">Tempor erat elitr rebum at clita. Diam dolor diam ipsum et tempor sit. Aliqu diam
-                                            amet diam et eos labore. 3</p>
-                                        <p class="mb-0">Diam dolor diam ipsum et tempor sit. Aliqu diam amet diam et eos labore.
-                                            Clita erat ipsum et lorem et sit</p>
+                                        <% }); %>
+                                        <% } %>
                                     </div>
                                 </div>
                             </div>
-                            <form action="#">
-                                <h4 class="mb-5 fw-bold">Leave a Reply</h4>
-                                <div class="row g-4">
-                                    <div class="col-lg-6">
-                                        <div class="border-bottom rounded">
-                                            <input type="text" class="form-control border-0 me-4" placeholder="Yur Name *">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="border-bottom rounded">
-                                            <input type="email" class="form-control border-0" placeholder="Your Email *">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="border-bottom rounded my-4">
-                                            <textarea name="" id="" class="form-control border-0" cols="30" rows="8" placeholder="Your Review *" spellcheck="false"></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="d-flex justify-content-between py-3 mb-5">
-                                            <div class="d-flex align-items-center">
-                                                <p class="mb-0 me-3">Please rate:</p>
-                                                <div class="d-flex align-items-center" style="font-size: 12px;">
-                                                    <i class="fa fa-star text-muted"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
+                            <% if (locals && locals.session && locals.session.user) { %>
+                                <form action="api/v1/product/review/<%= product._id %>" method="post">
+                                    <input type="hidden" name="userId" value="<%= locals.session.user._id %>">
+                                    <input type="hidden" name="avatar" value="<%= locals.session.user.avatar %>">
+                                    <h4 class="mb-5 fw-bold">Leave a Reply</h4>
+                                    <div class="row g-4">
+                                        <div class="col-lg-6">
+                                            <div class="border-bottom rounded">
+                                                <input type="text" class="form-control border-0 me-4" name="name" value="<%= locals.session.user.name %>" readonly>
                                             </div>
-                                            <a href="#" class="btn border border-secondary text-primary rounded-pill px-4 py-3"> Post Comment</a>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="border-bottom rounded">
+                                                <input type="email" class="form-control border-0" name="email" value="<%= locals.session.user.email %>" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <div class="border-bottom rounded my-4">
+                                                <textarea name="review" id="review" class="form-control border-0" cols="30" rows="8" placeholder="Your Review *" spellcheck="false"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <div class="d-flex justify-content-between py-3 mb-5">
+                                                <div class="d-flex align-items-center">
+                                                    <p class="mb-0 me-3">Please rate:</p>
+                                                    <div class="d-flex align-items-center star-rating" style="font-size: 24px;">
+                                                        <% for (let i = 1; i <= 5; i++) { %>
+                                                            <i class="fa fa-star text-muted" data-rating="<%= i %>"></i>
+                                                        <% } %>
+                                                    </div>
+                                                    <input type="hidden" name="rating" id="rating" value="0">
+                                                </div>
+                                                <button type="submit" class="btn border border-secondary text-primary rounded-pill px-4 py-3">Post Comment</button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </form>
+                                </form>
+                            <% } %>
                             <% } %>
                         </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                const stars = document.querySelectorAll('.star-rating .fa-star');
+                                const ratingInput = document.getElementById('rating');
+
+                                stars.forEach(star => {
+                                    star.addEventListener('click', function () {
+                                        const rating = this.getAttribute('data-rating');
+                                        ratingInput.value = rating;
+                                        updateStars(rating);
+                                    });
+
+                                    star.addEventListener('mouseover', function () {
+                                        const rating = this.getAttribute('data-rating');
+                                        updateStars(rating);
+                                    });
+
+                                    star.addEventListener('mouseout', function () {
+                                        const rating = ratingInput.value;
+                                        updateStars(rating);
+                                    });
+                                });
+
+                                function updateStars(rating) {
+                                    stars.forEach(star => {
+                                        if (star.getAttribute('data-rating') <= rating) {
+                                            star.classList.remove('text-muted');
+                                            star.classList.add('text-warning');
+                                        } else {
+                                            star.classList.remove('text-warning');
+                                            star.classList.add('text-muted');
+                                        }
+                                    });
+                                }
+                            });
+                            </script>
 
                     </div>
                     <div class="col-lg-4 col-xl-3">
@@ -234,37 +263,19 @@
                                 <div class="mb-4">
                                     <h4>Categories</h4>
                                     <ul class="list-unstyled fruite-categorie">
-                                        <li>
-                                            <div class="d-flex justify-content-between fruite-name">
-                                                <a href="#"><i class="fas fa-apple-alt me-2"></i>Apples</a>
-                                                <span>(3)</span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex justify-content-between fruite-name">
-                                                <a href="#"><i class="fas fa-apple-alt me-2"></i>Oranges</a>
-                                                <span>(5)</span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex justify-content-between fruite-name">
-                                                <a href="#"><i class="fas fa-apple-alt me-2"></i>Strawbery</a>
-                                                <span>(2)</span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex justify-content-between fruite-name">
-                                                <a href="#"><i class="fas fa-apple-alt me-2"></i>Banana</a>
-                                                <span>(8)</span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="d-flex justify-content-between fruite-name">
-                                                <a href="#"><i class="fas fa-apple-alt me-2"></i>Pumpkin</a>
-                                                <span>(5)</span>
-                                            </div>
-                                        </li>
+                                        <% for (let i = 0; i < categories.length; i++) { %>
+                                            <li>
+                                                <div class="d-flex justify-content-between fruite-name">
+                                                    <a href="/">
+                                                        <i class="fas fa-apple-alt me-2"></i><%= categories[i].name %>
+                                                    </a>
+                                                    <span>(<%= categories[i].count %>)</span>
+                                                </div>
+                                            </li>
+                                        <% } %>
                                     </ul>
+
+
                                 </div>
                             </div>
                             <div class="col-lg-12">

@@ -2,120 +2,191 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <title>Fruitables - Vegetable Website Template</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
+  <meta charset="utf-8">
+  <title>Fruitables - Vegetable Website Template</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="" name="keywords">
+  <meta content="" name="description">
+  <!-- Google Web Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet">
+  <!-- Icon Font Stylesheet -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Libraries Stylesheet -->
+  <link href="/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+  <link href="/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+  <link href="/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/style.css" rel="stylesheet">
+  <style>
+    .user-avatar-dropdown {
+      position: relative;
+      display: inline-block;
+    }
 
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet">
+    .user-avatar-dropdown .dropdown-menu {
+      display: none;
+      top: 100%;
+      right: 0;
+      min-width: 150px;
+      z-index: 1000;
+    }
 
-    <!-- Icon Font Stylesheet -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    .user-avatar-dropdown:hover .dropdown-menu {
+      display: block;
+    }
 
-    <!-- Libraries Stylesheet -->
-    <link href="lib/lightbox/css/lightbox.min.css" rel="stylesheet">
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    .user-avatar-dropdown .dropdown-item {
+      padding: 10px;
+      text-align: left;
+      color: #333;
+    }
 
+    .user-avatar-dropdown .dropdown-item:hover {
+      background-color: #f8f9fa;
+      color: #333;
+    }
 
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Template Stylesheet -->
-    <link href="css/style.css" rel="stylesheet">
+    .user-avatar-dropdown .dropdown-item.text-danger:hover {
+      background-color: #ffdddd;
+      color: #a00;
+    }
+  </style>
 </head>
 
 <body>
+  <!-- Spinner Start -->
+  <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
+    <div class="spinner-grow text-primary" role="status"></div>
+  </div>
+  <!-- Spinner End -->
 
-    <!-- Spinner Start -->
-    <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-grow text-primary" role="status"></div>
+
+  <!-- Navbar start -->
+  <div class="container-fluid fixed-top">
+    <div class="container topbar bg-primary d-none d-lg-block">
+      <div class="d-flex justify-content-between">
+        <div class="top-info ps-2">
+          <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> <a href="#" class="text-white">123 Street, New York</a></small>
+          <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#" class="text-white">Email@Example.com</a></small>
+        </div>
+        <div class="top-link pe-2">
+          <a href="#" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
+          <a href="#" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
+          <a href="#" class="text-white"><small class="text-white ms-2">Sales and Refunds</small></a>
+        </div>
+      </div>
     </div>
-    <!-- Spinner End -->
-
-
-    <!-- Navbar start -->
-    <div class="container-fluid fixed-top">
-        <div class="container topbar bg-primary d-none d-lg-block">
-            <div class="d-flex justify-content-between">
-                <div class="top-info ps-2">
-                    <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> <a href="#" class="text-white">123 Street, New York</a></small>
-                    <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#" class="text-white">Email@Example.com</a></small>
-                </div>
-                <div class="top-link pe-2">
-                    <a href="#" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
-                    <a href="#" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
-                    <a href="#" class="text-white"><small class="text-white ms-2">Sales and Refunds</small></a>
-                </div>
+    <div class="container px-0">
+      <nav class="navbar navbar-light bg-white navbar-expand-xl">
+        <a href="/" class="navbar-brand">
+          <h1 class="text-primary display-6">Fruitables</h1>
+        </a>
+        <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+          <span class="fa fa-bars text-primary"></span>
+        </button>
+        <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
+          <div class="navbar-nav mx-auto">
+            <a href="/" class="nav-item nav-link active">Home</a>
+            <a href="shop.html" class="nav-item nav-link">Shop</a>
+            <a href="shop-detail.html" class="nav-item nav-link">Shop Detail</a>
+            <div class="nav-item dropdown">
+              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
+              <div class="dropdown-menu m-0 bg-secondary rounded-0">
+                <a href="cart" class="dropdown-item">Cart</a>
+                <a href="checkout.html" class="dropdown-item">Checkout</a>
+                <a href="testimonial.html" class="dropdown-item">Testimonial</a>
+                <a href="404.html" class="dropdown-item">404 Page</a>
+              </div>
             </div>
-        </div>
-        <div class="container px-0">
-            <nav class="navbar navbar-light bg-white navbar-expand-xl">
-                <a href="/" class="navbar-brand"><h1 class="text-primary display-6">Fruitables</h1></a>
-                <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                    <span class="fa fa-bars text-primary"></span>
-                </button>
-                <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
-                    <div class="navbar-nav mx-auto">
-                        <a href="/" class="nav-item nav-link active">Home</a>
-                        <a href="shop.html" class="nav-item nav-link">Shop</a>
-                        <a href="shop-detail.html" class="nav-item nav-link">Shop Detail</a>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
-                            <div class="dropdown-menu m-0 bg-secondary rounded-0">
-                                <a href="cart" class="dropdown-item">Cart</a>
-                                <a href="checkout.html" class="dropdown-item">Checkout</a>
-                                <a href="testimonial.html" class="dropdown-item">Testimonial</a>
-                                <a href="404.html" class="dropdown-item">404 Page</a>
-                            </div>
-                        </div>
-                        <a href="contact.html" class="nav-item nav-link">Contact</a>
-                    </div>
-                    <div class="d-flex m-3 me-0">
-                        <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
-                        <a href="cart" class="position-relative me-4 my-auto">
-                            <i class="fa fa-shopping-bag fa-2x"></i>
-                            <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">3</span>
-                        </a>
-                        <% if (session && session.user) { %>
-                            <span><%= session.username %></span>
-                            <img src="<%= session.avatar %>" alt="" class="user-avatar">
-                            <a href="api/v1/users/logout" class="btn btn-danger ms-3">Logout</a>
-                        <% } else {%>
-                            <a href="/login" class="my-auto">
-                                <i class="fas fa-user fa-2x"></i>
-                            </a>
-                        <% } %>
-
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </div>
-    <!-- Navbar End -->
-
-
-    <!-- Modal Search Start -->
-    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-fullscreen">
-            <div class="modal-content rounded-0">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Search by keyword</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body d-flex align-items-center">
-                    <div class="input-group w-75 mx-auto d-flex">
-                        <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
-                        <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
-                    </div>
-                </div>
+            <a href="contact.html" class="nav-item nav-link">Contact</a>
+          </div>
+          <div class="d-flex m-3 me-0">
+            <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal">
+              <i class="fas fa-search text-primary"></i>
+            </button>
+            <a href="/cart" class="position-relative me-4 my-auto">
+              <i class="fa fa-shopping-bag fa-2x"></i>
+              <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">
+                <% if (locals && locals.session && locals.session.user) { %>
+                            <%=locals.cartItemCount %>
+                <% }else{ %>
+                0
+                <% }%>
+              </span>
+            </a>
+            <% if (locals && locals.session && locals.session.user) { %>
+            <div class="user-avatar-dropdown position-relative" style="border: 3px solid #81c408;border-radius: 24px;">
+              <img src="/img/<%= locals.session.user.avatar%>" alt="" width="50px" height="50px" style="border-radius: 50%;" class="user-avatar">
+              <span><%= locals.session.user.name %></span>
+              <div class="dropdown-menu position-absolute bg-white shadow-sm p-2 rounded-3">
+                <a href="/update-user/<%= locals.session.user._id %>" class="dropdown-item">Personal Information</a>
+                <a href="/change-password" class="dropdown-item">Change password
+                  <a href="/orderhistory" class="dropdown-item">Order History
+                <a href="/api/v1/users/logout" class="dropdown-item text-danger">Logout</a>
+              </div>
             </div>
+            <% } else { %>
+            <a href="/login" class="my-auto">
+              <i class="fas fa-user fa-2x"></i>
+            </a>
+            <% } %>
+          </div>
+
         </div>
+      </nav>
     </div>
-    <!-- Modal Search End -->
+  </div>
+  <!-- Navbar End -->
+
+
+  <!-- Modal Search Start -->
+  <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+      <div class="modal-content rounded-0">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Search by keyword</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body d-flex align-items-center">
+          <div class="input-group w-75 mx-auto d-flex">
+            <form class="w-100" action="/search" method="GET">
+              <input type="search" name="keyword" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
+              <button type="submit" class="btn btn-primary p-3"><i class="fa fa-search"></i></button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 </body>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const userAvatarDropdown = document.querySelector('.user-avatar-dropdown');
+    const dropdownMenu = userAvatarDropdown.querySelector('.dropdown-menu');
+
+    userAvatarDropdown.addEventListener('mouseenter', function() {
+      dropdownMenu.style.display = 'block';
+    });
+
+    userAvatarDropdown.addEventListener('mouseleave', function() {
+      dropdownMenu.style.display = 'none';
+    });
+
+    userAvatarDropdown.addEventListener('click', function(event) {
+      event.stopPropagation();
+      dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    document.addEventListener('click', function(event) {
+      if (!userAvatarDropdown.contains(event.target)) {
+        dropdownMenu.style.display = 'none';
+      }
+    });
+  });
+</script>
+
 </html>

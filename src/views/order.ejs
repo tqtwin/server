@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order List</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<style>
+    li{
+        list-style: none;
+    }
+</style>
+<body>
+    <div class="container">
+        <h1 class="my-4">Order List</h1>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Order Date</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Items</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% orders.forEach(order => { %>
+                <tr>
+                    <td><%= new Date(order.orderdate).toLocaleDateString() %></td>
+                    <td><%= new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.total) %></td>
+                    <td><%= order.status %></td>
+                    <td>
+                        <ul>
+                            <% order.items.forEach(item => { %>
+                            <li>
+                                <img src="/img/<%= item.productId.image %>" alt="" width="112px" height="78px">
+                                <%= item.productId.name %> - Quantity: <%= item.quantity %> - Price: <%= new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price) %>
+                            </li><br>
+                            <% }); %>
+                        </ul>
+                    </td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,142 +1,359 @@
-var express = require('express');
+const express = require('express');
+const path = require('path');
+const methodOverride = require('method-override');
+const sessionMiddleware = require('../Middleware/session');
+const loginController = require('../controller/login-controller');
 const productController = require('../controller/product.controller');
 const cartController = require('../controller/cart-controller');
-const methodOverride = require('method-override');
-var router = express.Router();
+const router = express.Router();
 
-//chat
+router.use(express.json());
+router.use(express.urlencoded({ extended: true }));
 router.use(methodOverride('_method'));
-const path = require('path')
-/* GET users listing. */
-router.use('/api/v1/product', require('./product'));
-router.use('/api/v1/users', require('./users'));
-router.use('/api/v1/cart', require('./cart'));
-const session = require('express-session');
-router.use(session({
-    secret: 'tranquocthangdeptrai', // Thay bằng chuỗi bí mật thực sự
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false }
-}));
+router.use(sessionMiddleware);
+router.use(express.static('public'))
 router.use((req, res, next) => {
     res.locals.session = req.session;
     next();
 });
+router.use(cartController.getCartItemCount);
 
-// Định nghĩa route để gửi file HTML cho trang chính
+router.post('/api/v1/users/login', loginController.login);
+router.post('/api/v1/users/logout', loginController.logout);
+
+function checkSession(req, res, next) {
+    if (!req.session.admin) {
+        return res.status(400).render('login', { message: 'Please login as admin ', success: false });
+    }
+    next();
+}
+router.get('/login', (req, res) => {
+    res.render('login');
+});
+
 router.get('/chat', (req, res) => {
-    const chat = path.join(__dirname, '../views/chat.ejs');
-    res.render(chat);
+    res.render('chat');
 });
-router.get('/', async (req, res) => {
-    const productsFromDB = await productController.getProductList();
-    res.render('index.ejs', { products: productsFromDB, session: req.session });
-});
-router.get('/logout')
-//admin product
-router.get('/admin', async (req, res) => {
-    const productsFromDB = await productController.getProductList()
-    const indexView = path.join(__dirname, '../views/admin.ejs');
-    res.render(indexView, { products: productsFromDB });
-})
-router.get('/signup', (req, res) => {
-    const signup = path.join(__dirname, '../views/signup.ejs');
-    res.render(signup);
-});
-
-router.get('/add', async function (req, res, next) {
+router.get('/search', async (req, res) => {
     try {
-        const addView = path.join(__dirname, '../views/add.ejs');
-        res.render(addView);
+        const productsFind = await productController.findProductByName(req, res);
+        res.render('indexFind', { productsFind: productsFind });
     } catch (error) {
-        console.error('Error rendering add.ejs:', error);
+        console.error('Error fetching products:', error);
         res.status(500).send("An error occurred while rendering the page.");
     }
 });
-router.get('/edit/:_id', async function (req, res, next) {
+//change-password
+
+router.get('/', async (req, res) => {
+    try {
+        const productsFromDB = await productController.getProductList();
+        res.render('index', { products: productsFromDB });
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        res.status(500).send("An error occurred while rendering the page.");
+    }
+});
+
+router.get('/check-session', (req, res) => {
+    console.log("Session data:", req.session);
+    res.json(req.session);
+});
+
+router.get('/logout', loginController.logout);
+
+router.get('/admin',checkSession, async (req, res) => {
+    try {
+        const productsFromDB = await productController.getProductList();
+        res.render('../views/admin/admin', { products: productsFromDB });
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        res.status(500).send("An error occurred while rendering the page.");
+    }
+});
+router.get('/account',checkSession, async (req, res) => {
+    try {
+        const accountFromDB = await loginController.getAccountList();
+        res.render('../views/admin/account', { accounts: accountFromDB });
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        res.status(500).send("An error occurred while rendering the page.");
+    }
+});
+router.get('/coupon',checkSession, async (req, res) => {
+    try {
+        const couponFromDB = await cartController.getCoupon();
+        res.render('../views/admin/coupon', { coupons: couponFromDB });
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        res.status(500).send("An error occurred while rendering the page.");
+    }
+});
+
+router.get('/signup', (req, res) => {
+    res.render('signup');
+});
+
+router.get('/add',checkSession, (req, res) => {
+    res.render('../views/admin/add');
+});
+router.get('/add-coupon',checkSession, (req, res) => {
+    res.render('../views/admin/add-coupon');
+});
+router.get('/admin/index',checkSession, (req, res) => {
+    res.render('../views/admin/index');
+});
+
+router.get('/edit/:_id',checkSession, async (req, res) => {
     try {
         const newProduct = await productController.getProductOne(req, res);
-        const indexView = path.join(__dirname, '../views/edit.ejs');
-        res.render(indexView, { product: newProduct }); // Assuming you're rendering a single product
+        res.render('../views/admin/edit', { product: newProduct });
     } catch (error) {
-        console.error('Error rendering product detail page:', error);
-        res.status(500).send("An error occurred while rendering product detail page");
-    }
-});
-// trang giỏ hàng
-router.get('/cart', async (req, res) => {
-    const cartFromDB = await cartController.getCart()
-    const indexView = path.join(__dirname, '../views/cart.ejs');
-    res.render(indexView, { carts: cartFromDB });
-})
-// trang đăng nhập
-router.get('/login', async function (req, res, next) {
-    try {
-        const login = path.join(__dirname, '../views/login.ejs');
-        res.render(login);
-    } catch (error) {
-        console.error('Error rendering add.ejs:', error);
+        console.error('Error fetching product:', error);
         res.status(500).send("An error occurred while rendering the page.");
     }
 });
+
+router.get('/change-password/', async (req, res) => {
+    res.render('update-password')
+});
+router.get('/resetpassword/', async (req, res) => {
+    res.render('resetpassword')
+});
+router.get('/orderhistory', async (req, res) => {
+    try {
+        const orders = await cartController.getOrder(req, res);
+        res.render('order', { orders: orders });
+    } catch (error) {
+        console.error('Error fetching product:', error);
+        res.status(500).send("An error occurred while rendering the page.");
+    }
+});
+router.post('/reset-password/', async (req, res) => {
+    try {
+        await loginController.resetPassword(req, res);
+        res.status(201).send("Product added successfully");
+    } catch (error) {
+        console.error('Error adding product:', error);
+        res.status(500).send("Error adding product");
+    }
+});
+
+router.get('/edit-coupon/:_id', async (req, res) => {
+    try {
+        const newCoupon = await cartController.getcouponOne(req, res);
+        res.render('../views/admin/edit-coupon', { coupon: newCoupon });
+    } catch (error) {
+        console.error('Error fetching product:', error);
+        res.status(500).send("An error occurred while rendering the page.");
+    }
+});
+router.get('/update-user/:_id', async (req, res) => {
+    try {
+        const newUser = await loginController.getUserOne(req, res);
+        res.render('user', { user: newUser });
+    } catch (error) {
+        console.error('Error fetching product:', error);
+        res.status(500).send("An error occurred while rendering the page.");
+    }
+});
+
+router.get('/cart', async (req, res) => {
+    try {
+        const cartFromDB = await cartController.getCart();
+        res.render('cart', { carts: cartFromDB });
+    } catch (error) {
+        console.error('Error fetching cart:', error);
+        res.status(500).send("An error occurred while rendering the page.");
+    }
+});
+router.get('/orderadmin/:status', async (req, res) => {
+    try {
+        const status = req.params.status;
+        const orders = await cartController.getOrderAdmin(status); // Truyền status vào hàm getOrderAdmin
+        res.render('../views/admin/ordercontroll', { orders: orders });
+    } catch (error) {
+        console.error('Error fetching cart:', error);
+        res.status(500).send("An error occurred while rendering the page.");
+    }
+});
+
 router.get('/:_id', async (req, res) => {
     try {
         const newProduct = await productController.getProductOne(req, res);
-        const indexView = path.join(__dirname, '../views/shop-detail.ejs');
-        res.render(indexView, { product: newProduct }); // Assuming you're rendering a single product
+        const uniqueCategories = await productController.getCategory(req, res);
+        console.log(uniqueCategories); // Kiểm tra cấu trúc của uniqueCategories
+        res.render('shop-detail', { product: newProduct, categories: uniqueCategories });
     } catch (error) {
-        console.error('Error rendering product detail page:', error);
-        res.status(500).send("An error occurred while rendering product detail page");
+        console.error('Error fetching product:', error);
+        res.status(500).send("An error occurred while rendering the page.");
     }
 });
+
+
 router.post('/add', async (req, res) => {
     try {
         await productController.addProduct(req, res);
+        res.status(201).send("Product added successfully");
     } catch (error) {
-        console.error('Error adding item:', error);
-        res.status(500).send("Error adding item");
+        console.error('Error adding product:', error);
+        res.status(500).send("Error adding product");
     }
 });
+router.post('/update-quantity', async (req, res) => {
+    try {
+        await cartController.updateQuantity(req, res);
+        res.status(201).send("Product added successfully");
+    } catch (error) {
+        console.error('Error adding product:', error);
+        res.status(500).send("Error adding product");
+    }
+});
+
+router.post('/signup', async (req, res) => {
+    try {
+        await loginController.signup(req, res);
+        res.status(201).send("Product added successfully");
+    } catch (error) {
+        console.error('Error adding product:', error);
+        res.status(500).send("Error adding product");
+    }
+});
+router.post('/review/:_id', async (req, res) => {
+    try {
+        await productController.addReview(req, res);
+        res.status(201).send("Product added successfully");
+    } catch (error) {
+        console.error('Error adding product:', error);
+        res.status(500).send("Error adding product");
+    }
+});
+router.get('/lockaccount/:_id', async (req, res) => {
+    try {
+        await loginController.lockAccount(req, res);
+        res.status(201).send("Product added successfully");
+    } catch (error) {
+        console.error('Error adding product:', error);
+        res.status(500).send("Error adding product");
+    }
+});
+router.get('/deleteaccount/:_id', async (req, res) => {
+    try {
+        await loginController.deleteUser(req, res);
+        res.status(201).send("Product added successfully");
+    } catch (error) {
+        console.error('Error adding product:', error);
+        res.status(500).send("Error adding product");
+    }
+});
+router.get('/deletecoupon/:_id', async (req, res) => {
+    try {
+        await cartController.deleteCoupon(req, res);
+
+    } catch (error) {
+        console.error('Error adding product:', error);
+        res.status(500).send("Error adding product");
+    }
+});
+router.post('/addcoupon', async (req, res) => {
+    try {
+        await cartController.addCoupon(req, res);
+        res.status(201).send("Product added successfully");
+    } catch (error) {
+        console.error('Error adding product:', error);
+        res.status(500).send("Error adding product");
+    }
+});
+
 router.post('/edit/:_id', async (req, res) => {
     try {
         await productController.editProduct(req, res);
-
+        res.status(200).send("Product updated successfully");
     } catch (error) {
-        console.error('Error updating item:', error);
-        res.status(500).send("Error updating item");
+        console.error('Error updating product:', error);
+        res.status(500).send("Error updating product");
     }
 });
-//xóa sản phẩm
+router.post('/change-password/:_id', async (req, res) => {
+    try {
+        await loginController.changePassword(req, res);
+        res.status(200).send("Product updated successfully");
+    } catch (error) {
+        console.error('Error updating product:', error);
+        res.status(500).send("Error updating product");
+    }
+});
+
+router.post('/check-email/', async (req, res) => {
+    try {
+        await loginController.checkEmail(req, res);
+        res.status(200).send("Product updated successfully");
+    } catch (error) {
+        console.error('Error updating product:', error);
+        res.status(500).send("Error updating product");
+    }
+});
+
+router.post('/edit-coupon/:_id', async (req, res) => {
+    try {
+        await cartController.editCoupon(req, res);
+        res.status(200).send("coupon edit successfully");
+    } catch (error) {
+        console.error('Error updating product:', error);
+        res.status(500).send("Error updating product");
+    }
+});
+router.post('/update-user/:_id', async (req, res) => {
+    try {
+        await loginController.updateUser(req, res);
+        res.status(200).send("Product updated successfully");
+    } catch (error) {
+        console.error('Error updating product:', error);
+        res.status(500).send("Error updating product");
+    }
+});
+
 router.get('/delete/:_id', async (req, res) => {
     try {
         await productController.deleteProduct(req, res);
-        res.status(200).send("Product deleted successfully");
     } catch (error) {
         console.error('Error deleting product:', error);
         res.status(500).send("Error deleting product");
     }
 });
-//thêm vào giỏ hàng
+
 router.post('/add-cart/:_id', async (req, res) => {
     try {
         await cartController.addCart(req, res);
+        res.status(201).send("Item added to cart successfully");
     } catch (error) {
-        console.error('Error adding item:', error);
-        res.status(500).send("Error adding item");
+        console.error('Error adding to cart:', error);
+        res.status(500).send("Error adding to cart");
+    }
+});
+router.post('/order', async (req, res) => {
+    try {
+        await cartController.createOrder(req,res)
+        res.status(201).send("Item added to cart successfully");
+    } catch (error) {
+        console.error('Error adding to cart:', error);
+        res.status(500).send("Error adding to cart");
     }
 });
 
-//deletecart one item
 router.get('/delete-cart/:_id', async (req, res) => {
     try {
         await cartController.deleteCart(req, res);
-        res.status(200).send("item deleted successfully");
+        res.status(200).send("Item deleted from cart successfully");
     } catch (error) {
-        console.error('Error deleting product:', error);
-        res.status(500).send("Error deleting product");
+        console.error('Error deleting from cart:', error);
+        res.status(500).send("Error deleting from cart");
     }
 });
 
+// Route cho việc load nội dung động
+router.get('/product', (req, res) => {
+    res.render('product');
+});
 
 module.exports = router;
-

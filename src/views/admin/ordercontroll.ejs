@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order List</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+</head>
+<style>
+
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    #sidebar {
+      width: 100%;
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    #sidebar ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      margin: 0;
+      justify-content: flex-end;
+    }
+    #sidebar li {
+      margin-left: 10px;
+      border: 1px solid #fff; /* Add border around each li */
+      padding: 5px 10px; /* Add padding inside the border */
+      border-radius: 4px; /* Optional: Add rounded corners */
+      box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+    }
+    #sidebar li a {
+      text-decoration: none;
+      color: #fff;
+    }
+    #main {
+      flex-grow: 1;
+      padding: 20px;
+      overflow: auto;
+    }
+    /* Highlight the Coupon button */
+    .coupon-highlight {
+      background-color: #ff0; /* Bright yellow background */
+      color: #333; /* Dark text color for contrast */
+      font-weight: bold; /* Make the text bold */
+      border-color: #ff0; /* Match the border color with the background */
+    }
+    .menu {
+      width: 100%;
+      background-color: #fff;
+      color: black;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    .menu ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      margin: 0;
+      justify-content: flex-start;
+    }
+    .menu  li {
+      margin-left: 10px;
+      border: 1px solid black; /* Add border around each li */
+      padding: 5px 10px; /* Add padding inside the border */
+      border-radius: 4px; /* Optional: Add rounded corners */
+      box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+    }
+    .menu  li a {
+      text-decoration: none;
+      color:black;
+    }/* CSS classes for different order statuses */
+
+
+  </style>
+
+<body>
+    <div id="sidebar">
+        <h2>Fruitables - Vegetable Website - Admin</h2>
+        <ul>
+          <li><a href="/admin">Dashboard</a></li>
+          <li><a href="/admin/products">Product</a></li>
+          <li><a href="/admin/accounts">Account</a></li>
+          <li><a href="/admin/coupons">Coupon</a></li>
+          <li class="coupon-highlight"><a href="/admin/orders" style="color: #333;">Order</a></li>
+          <li><a href="/api/v1/users/logout">Logout</a></li>
+        </ul>
+    </div>
+    <div class="menu">
+    <ul>
+      <li><a href="../orderadmin/pending">Pending</a></li>
+      <li><a href="../orderadmin/processed">Processed</a></li>
+      <li><a href="../orderadmin/intransit">In Transit</a></li>
+      <li><a href="../orderadmin/delivered">Delivered</a></li>
+      <li><a href="../orderadmin/canceled">Canceled</a></li>
+    </ul>
+    </div>
+    <div class="container">
+        <h1>Order List</h1>
+        <div class="table-responsive-sm">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Order Date</th>
+                        <th>Delivery Date</th>
+                        <th>Total</th>
+                        <th>Recipient Name</th>
+                        <th>Phone</th>
+                        <th>Address</th>
+                        <th>Status</th>
+                        <th>Items</th>
+                        <th>Xử lý</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% orders.forEach((order, index) => { %>
+                    <tr>
+                        <td><%= index + 1 %></td>
+                        <td><%= new Date(order.orderdate).toLocaleDateString() %></td>
+                        <td><%= order.deliverydate ? new Date(order.deliverydate).toLocaleDateString() : '' %></td>
+                        <td><%= new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.total) %></td>
+                        <td><%= order.recipientname %></td>
+                        <td><%= order.phone %></td>
+                        <td><%= order.address %></td>
+                        <td><%= order.status %></td>
+                        <td>
+                            <ul>
+                                <% order.items.forEach(item => { %>
+                                <li><%= item.name %> - <%= item.quantity %>kg - <%= new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price) %></li>
+                                <% }); %>
+                            </ul>
+                        </td>
+                        <td>
+                          <% if (order.status === 'pending') { %>
+                            <button class="btn btn-success" onclick="updateOrderStatus('<%= order._id %>', 'processed')">Xác nhận</button>
+                            <button class="btn btn-danger" onclick="updateOrderStatus('<%= order._id %>', 'cancelled')">Hủy</button>
+                        <% } else if (order.status === 'processed') { %>
+                            <button class="btn btn-success" onclick="updateOrderStatus('<%= order._id %>', 'intransit')">Giao hàng</button>
+                        <% } else if (order.status === 'intransit') { %>
+                            <button class="btn btn-success" onclick="updateOrderStatus('<%= order._id %>', 'delivered')">Giao thành công</button>
+                        <% } %>
+
+                        </td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        async function updateOrderStatus(orderId, status) {
+            try {
+                const response = await fetch('/api/v1/cart/update-status', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ orderId, status })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    alert(data.message);
+                    location.reload(); // Reload the page to see the updated status
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                console.error('Error updating order status:', error);
+                alert('An error occurred while updating the order status');
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get the current URL path
+            const path = window.location.pathname;
+
+            // Find the corresponding menu item and add the 'coupon-highlight' class if it matches the current URL path
+            document.querySelectorAll('.menu li a').forEach(function(item) {
+                if (item.getAttribute('href').startsWith('../orderadmin/')) {
+                    const status = item.getAttribute('href').split('../orderadmin/')[1];
+                    if (path.includes(status)) {
+                        item.parentElement.classList.add('coupon-highlight');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
