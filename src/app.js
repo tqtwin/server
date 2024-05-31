@@ -46,6 +46,6 @@ io.on("connection", (socket) => {
         io.emit("chat message", msg);
     });
 });
-server.listen(3002);
+server.listen(3001);
 module.exports = app;
 
